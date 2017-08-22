@@ -1,3 +1,4 @@
+local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ClientIs = ReplicatedStorage:FindFirstChild('ClientIs')
 local ServerIs = ReplicatedStorage:FindFirstChild('ServerIs')
@@ -56,12 +57,27 @@ Noun.On = function (this, VerbName)
 	return Verb[VerbName] or New('Verb', VerbName)
 end
 
+--[[ 
+	LastFired is a cache to allow late "watchers"
+	to sync up with the last value change associated
+	with an event. This alleviates the need to use
+	a remote function to request the event state/data,
+	(for example) as when a player's UI loads after an
+	important event has already fired (i.e. 'GameState')
+]]--
+
+Noun.LastFired = {}
+
 Noun.FireAcross = function (this, VerbName, ...)
-	if game.Players.LocalPlayer then
-		ClientIs:FireServer(this, VerbName, ...)
+	if (RunService:isServer() and game.Players.LocalPlayer) then
+		this:FireOnce(VerbName, ...) -- Studio Solo Play
+	elseif RunService:isClient() then
+		ClientIs:FireServer(this, VerbName, ...) -- Client
 	else
-		ServerIs:FireAllClients(this, VerbName, ...)
+		ServerIs:FireAllClients(this, VerbName, ...) -- Server
 	end
+	this.LastFired[VerbName] = {...}
+	return this
 end
 
 Noun.FireOnce = function (this, VerbName, ...)
@@ -72,11 +88,17 @@ Noun.FireOnce = function (this, VerbName, ...)
 			pcall(action, ...)
 		end
 	end
+	this.LastFired[VerbName] = {...}
+	return this
 end
 
 Noun.Fire = function (this, VerbName, ...)
 	this:FireOnce(VerbName, ...)
-	this:FireAcross(VerbName, ...)
+	-- prevent duplicate events in Studio Solo Play
+	if not (RunService:isServer() and game.Players.LocalPlayer) then
+		this:FireAcross(VerbName, ...)
+	end
+	return this
 end
 
 local Watch = setmetatable({}, {
