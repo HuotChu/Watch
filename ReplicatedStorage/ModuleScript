@@ -26,11 +26,8 @@ local Class = function (name)
 	return t
 end
 
-local Nouns = {}
-local Noun = Class()
-local Verbs = {}
-local Verb = Class()
-local Actions = {}
+local Nouns, Verbs, Actions = {}, {}, {}
+local Noun, Verb = Class(), Class()
 
 local New = function (which, name)
 	local foo, where
@@ -56,15 +53,6 @@ Noun.On = function (this, VerbName)
 	VerbName = this.Name..'_'..VerbName
 	return Verb[VerbName] or New('Verb', VerbName)
 end
-
---[[ 
-	LastFired is a cache to allow late "watchers"
-	to sync up with the last value change associated
-	with an event. This alleviates the need to use
-	a remote function to request the event state/data,
-	(for example) as when a player's UI loads after an
-	important event has already fired (i.e. 'GameState')
-]]--
 
 Noun.LastFired = {}
 
