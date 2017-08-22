@@ -22,7 +22,6 @@ local Class = function (name)
 	t.New = function (name)
 		return setmetatable({Name = name}, t)
 	end
-	
 	return t
 end
 
@@ -34,7 +33,6 @@ local Actions = {}
 
 local New = function (which, name)
 	local foo, where
-	
 	if which == 'Noun' then
 		which = Noun
 		where = Nouns
@@ -42,30 +40,33 @@ local New = function (which, name)
 		which = Verb
 		where = Verbs
 	end
-
 	foo = which.New(name)
 	where[name] = foo
-	
 	return foo
 end
 
-Verb.Do = function (this, ActionName, callBack)
-	ActionName = this.Name..'_'..ActionName
-	Actions[ActionName] = callBack
-	
-	return ActionName
+Verb.Do = function (this, action)
+	local name = this.Name..'_'..string.sub( tostring({}), 8 )
+	Actions[name] = action
+	return name
 end
 
-Noun.When = function (this, VerbName)
+Noun.On = function (this, VerbName)
 	VerbName = this.Name..'_'..VerbName
-	
 	return Verb[VerbName] or New('Verb', VerbName)
+end
+
+Noun.FireAcross = function (this, VerbName, ...)
+	if game.Players.LocalPlayer then
+		ClientIs:FireServer(this, VerbName, ...)
+	else
+		ServerIs:FireAllClients(this, VerbName, ...)
+	end
 end
 
 Noun.FireOnce = function (this, VerbName, ...)
 	local name = this.Name..'_'..VerbName
 	local verb = Verb[name] or New('Verb', VerbName)
-	
 	for path, action in pairs(Actions) do
 		if path:find(name) then
 			pcall(action, ...)
@@ -73,14 +74,9 @@ Noun.FireOnce = function (this, VerbName, ...)
 	end
 end
 
-Noun.Is = function (this, VerbName, ...)
+Noun.Fire = function (this, VerbName, ...)
 	this:FireOnce(VerbName, ...)
-	
-	if game.Players.LocalPlayer then
-		ClientIs:FireServer(this, VerbName, ...)
-	else
-		ServerIs:FireAllClients(this, VerbName, ...)
-	end
+	this:FireAcross(VerbName, ...)
 end
 
 local Watch = setmetatable({}, {
@@ -89,7 +85,6 @@ local Watch = setmetatable({}, {
 		else return rawget(t, k)
 		end
 	end,
-	
 	__call = function (this, ObjectName)
 		return Nouns[ObjectName] or New('Noun', ObjectName)
 	end
