@@ -23,6 +23,8 @@
      local ServerScriptService = game:GetService('ServerScriptService')
      local Watch = require(ServerScriptService:WaitForChild('Watch'))
  ```
+ 
+ > Sample Place (no copylock) [https://www.roblox.com/games/994624803/Watch-Module-for-Roblox-Development]
 
 ## Jasmine-inspired syntax
 
