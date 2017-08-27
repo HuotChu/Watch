@@ -4,13 +4,13 @@
 
 ### Watch provides a clean, obvious syntax for managing events within Roblox Lua code.
 
-  - Supports FilteringEnabled and Experimental games
   - Eventing-made-easy with 4 way event communication.
       - Server > Server
       - Server > Client
       - Client > Server
       - Client > Client
-  - Replaces the need to create RemoteFunction/RemoteEvent objects
+  - Supports FilteringEnabled, Experimental, and Studio Solo Play
+  - No need to create RemoteEvents!
 
 ## Installation:
   1. Create a new ModuleScript in ServerScriptService
@@ -34,13 +34,17 @@
   local state = Watch('State')
   
   -- Name the event to listen to
-  local stateChange = state:On('change')
+  local stateChange = state:On('Change')
   
   -- attach event handler
   stateChange:Do(function (state) print(state) end)
   
   -- Easy way to write the same thing in one line...
-  Watch('State'):On('change'):Do(function (state) print(state) end)
+  Watch('State'):On('Change'):Do(function (state) print(state) end)
+  
+  -- Pro-Tip #1: Method names *On* and *Do* are **optional**
+  -- Pro-Tip #2: This form is not recommended, unless you understand why it works
+  Watch('State')('Change')(function (state) print(state) end)
   
   -- Fire the event
   Watch('State'):Fire('change', 'someValue')
@@ -48,7 +52,7 @@
   -- Prints 'someValue'
 ```
 
-**Watch** is designed to combine coding efficiency with grammatical concepts.
+**Watch** is designed to combine coding efficiency with common grammatical constructs.
 
   - Always *Watch* a **Noun**
       + local player = Watch('Player')
