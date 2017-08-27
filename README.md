@@ -16,9 +16,12 @@ Watch provides a clean, obvious syntax for managing events within Roblox Lua cod
   > - Create a new ModuleScript in ServerScriptService
   > - Rename the ModuleScript to **Watch**
   > - Copy the contents of Watch.lua into your ModuleScript and Save.
+  
   > To use in Scripts/LocalScripts:
-  > - ```lua local ServerScriptService = game:GetService('ServerScriptService')
-         local Watch = require(ServerScriptService:WaitForChild('Watch'))```
+ ```lua
+     local ServerScriptService = game:GetService('ServerScriptService')
+     local Watch = require(ServerScriptService:WaitForChild('Watch'))
+ ```
 
 ## Jasmine-inspired syntax
 
