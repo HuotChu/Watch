@@ -67,9 +67,9 @@
       + local updateTxtId = onData:Do(**function(txt) script.Parent.Text=txt end**)
       + local hitHandlerId = onHit:Do(**function(effect) session.status=effect end**)
   - Always *Fire*, *FireOnce*, or *FireAcross* a **Verb**
-      + player:Fire(*'Run'*)
-      + data:FireAcross(*'Update'*, 'Data!')
-      + ray:FireOnce(*'Hit'*, 'frozen')
+      + player:Fire(**'Run'**)
+      + data:FireAcross(**'Update'**, 'Data!')
+      + ray:FireOnce(**'Hit'**, 'frozen')
       
 ## Three Ways to Fire Events
 
