@@ -1,7 +1,0 @@
-local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Watch = require(ReplicatedStorage:WaitForChild('Watch'))
-local ServerIs = ReplicatedStorage:FindFirstChild('ServerIs')
-local onServerIs = function (this, VerbName, ...)
-	Watch(this.Name):FireOnce(VerbName, ...)
-end
-ServerIs.OnClientEvent:Connect(onServerIs)
