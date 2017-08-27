@@ -55,21 +55,33 @@
 **Watch** is designed to combine coding efficiency with common grammatical constructs.
 
   - Always *Watch* a **Noun**
-      + local player = Watch('Player')
-      + local data = Watch('DataStore')
-      + local ray = Watch('FreezeRay')
+      + local player = Watch(**'Player'**)
+      + local data = Watch(**'DataStore'**)
+      + local ray = Watch(**'FreezeRay'**)
   - Always *On* a **Verb** [Note: On is short for Upon]
-      + local onRun = player:On('Run')
-      + local onData = data:On('Update')
-      + local onHit = ray:On('Hit')
+      + local onRun = player:On(**'Run'**)
+      + local onData = data:On(**'Update'**)
+      + local onHit = ray:On(**'Hit'**)
   - Always *Do* a **Function**
-      + local playSoundId = onRun:Do(function() runSound.Play() end)
-      + local updateTxtId = onData:Do(function(txt) script.Parent.Text=txt end)
-      + local hitHandlerId = onHit:Do(function(effect) session.status=effect end)
+      + local playSoundId = onRun:Do(**function() runSound.Play() end**)
+      + local updateTxtId = onData:Do(**function(txt) script.Parent.Text=txt end**)
+      + local hitHandlerId = onHit:Do(**function(effect) session.status=effect end**)
   - Always *Fire*, *FireOnce*, or *FireAcross* a **Verb**
-      + player.Fire('Run')
-      + data.FireAcross('Update', 'Data!')
-      + ray.FireOnce('Hit', 'frozen')
+      + player:Fire('Run')
+      + data:FireAcross('Update', 'Data!')
+      + ray:FireOnce('Hit', 'frozen')
+      
+## Three Ways to Fire Events
+
+1. Watch(Noun):Fire(Verb, Args)
+    * Fire - fires the event on both Client & Server
+2. Watch(Noun):FireAcross(Verb, Args)
+    * FireAcross - fires the event to the other side only
+    * Client fires across to Server OR Server fires across to Client
+3. Watch(Noun):FireOnce(Verb, Args)
+    * FireOnce - fires the event to the same side only
+    * Client fires to Client OR Server fires to Server
+
 &nbsp;
 
 ...more to come!
