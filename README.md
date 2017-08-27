@@ -1,8 +1,8 @@
 # Watch
 
-> Work In Progress: Alpha Version 2.0
+> Work In Progress: Version 0.1.0 (Beta)
 
-Watch provides a clean, obvious syntax for managing events within Roblox Lua code.
+### Watch provides a clean, obvious syntax for managing events within Roblox Lua code.
 
   - Supports FilteringEnabled and Experimental games
   - Eventing-made-easy with 4 way event communication.
@@ -12,12 +12,13 @@ Watch provides a clean, obvious syntax for managing events within Roblox Lua cod
       - Client > Client
   - Replaces the need to create RemoteFunction/RemoteEvent objects
 
-  > Installation:
-  > - Create a new ModuleScript in ServerScriptService
-  > - Rename the ModuleScript to **Watch**
-  > - Copy the contents of Watch.lua into your ModuleScript and Save.
+## Installation:
+  1. Create a new ModuleScript in ServerScriptService
+  2. Rename the ModuleScript to **Watch**
+  3. Copy the contents of Watch.lua into your ModuleScript and Save.
   
-  > To use in Scripts/LocalScripts:
+ To use **Watch** in your Scripts/LocalScripts:
+ 
  ```lua
      local ServerScriptService = game:GetService('ServerScriptService')
      local Watch = require(ServerScriptService:WaitForChild('Watch'))
@@ -50,21 +51,21 @@ Watch provides a clean, obvious syntax for managing events within Roblox Lua cod
 **Watch** is designed to combine coding efficiency with grammatical concepts.
 
   - Always *Watch* a **Noun**
-      + local player = Watch('Player')   -- Noun (person)
-      + local data = Watch('DataStore')  -- Noun (place)
-      + local ray = Watch('FreezeRay')   -- Noun (thing)
+      + local player = Watch('Player')
+      + local data = Watch('DataStore')
+      + local ray = Watch('FreezeRay')
   - Always *On* a **Verb** [Note: On is short for Upon]
-      + local onRun = player:On('Run')   -- Verb (walk)
-      + local onData = data:On('Update') -- Verb (update)
-      + local onHit = ray:On('Hit')      -- Verb (hit)
+      + local onRun = player:On('Run')
+      + local onData = data:On('Update')
+      + local onHit = ray:On('Hit')
   - Always *Do* a **Function**
       + local playSoundId = onRun:Do(function() runSound.Play() end)
       + local updateTxtId = onData:Do(function(txt) script.Parent.Text=txt end)
       + local hitHandlerId = onHit:Do(function(effect) session.status=effect end)
   - Always *Fire*, *FireOnce*, or *FireAcross* a **Verb**
-      + player.Fire('Run')                   -- Fire at BOTH Client & Server
-      + data.FireAcross('Update', 'Data!')   -- Client Fires @ Server OR Server Fires @ Client
-      + ray.FireOnce('Hit', 'frozen')        -- Client Fires @ Client OR Server Fires @ Server
+      + player.Fire('Run')
+      + data.FireAcross('Update', 'Data!')
+      + ray.FireOnce('Hit', 'frozen')
 &nbsp;
 
 ...more to come!

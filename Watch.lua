@@ -1,3 +1,6 @@
+--[---- Watch API by HuotChu ----]--
+--[---- Version 0.1.0 (Beta) ----]--
+
 local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerScriptService = game:GetService('ServerScriptService')
