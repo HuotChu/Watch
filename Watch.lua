@@ -1,5 +1,5 @@
 --[---- Watch API by HuotChu ----]--
---[---- Version 0.1.0 (Beta) ----]--
+--[---- Version 0.2.0 (Beta) ----]--
 
 local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
@@ -49,18 +49,14 @@ local Class = function (className)
 				end
 			end
 		end
-		if className ~= 'Object' or functionName then
-			baseObject = setmetatable(baseObject, Part)
-		end
+		setmetatable(baseObject, Part)
 		if Storage[bucketName] then
 			Storage[bucketName][instanceName] = baseObject
 		end
 		return baseObject
 	end
-
 	Part.__index = Part
 	Part.__super = Part
-
 	return Part
 end
 
@@ -80,9 +76,7 @@ local Verb = function (instanceName, baseObject, functionName)
 			return instanceName
 		end
 	}
-	
 	functionName = functionName or 'Do'
-	
 	return Class('Verb').New(instanceName, baseObject, functionName)
 end
 
@@ -120,23 +114,53 @@ local Noun = function (instanceName, baseObject, functionName)
 			return this
 		end
 	}
-	
 	functionName = functionName or 'On'
-	
 	return Class('Noun').New(instanceName, baseObject, functionName)
 end
 
 local Object = function (instanceName, baseObject, functionName)
-	return Class('Object').New(instanceName, baseObject, functionName)
+	-- store the object
+	Objects[instanceName] = baseObject
+	-- create a Noun for the prototype
+	-- storing this doppleganger in Nouns reserves the instanceName as well
+	local Temp = Noun(instanceName)
+	-- create a proxy table
+	local proxy = {}
+	local meta = {
+		__call = function (...) return baseObject.__call(...) end,
+		__index = function (t, k)
+			local verb = instanceName..'_'..k
+			local value
+			if Temp[k] then
+				value = Temp[k]
+			else
+				value = baseObject[k]
+				if Verbs[verb] then
+					t:FireOnce(k, value, k, 'Get')
+				end
+			end
+			return value
+		end,
+		__newindex = function (t, k, value)
+			local verb = instanceName..'_'..k
+			local cache = baseObject[k]
+			baseObject[k] = value
+			if Verbs[verb] then
+				t:FireOnce(k, value, k, 'Set', cache)
+			end
+		end
+	}
+	setmetatable(proxy, meta)
+	return proxy
 end
 
 local Watch = {}
 
-Watch.New = function (className, instanceName, Object, functionName)
+Watch.New = function (className, instanceName, object, functionName)
 	if className == 'Noun' then
-		return Noun(instanceName, Object, functionName)
+		return Noun(instanceName, object, functionName)
 	else
-		return Object(instanceName, Object, functionName)
+		return Object(instanceName, object, functionName)
 	end
 end
 
@@ -146,17 +170,16 @@ Watch = setmetatable(Watch, {
 		else return rawget(t, k)
 		end
 	end,
-	__call = function (t, instanceName, Object, functionName)
-		local className = Object and 'Object' or 'Noun'
+	__call = function (t, instanceName, object, functionName)
+		local className = object and 'Object' or 'Noun'
 		local bucketName = className..'s'
 		local bucket = Storage[bucketName]
-		return (bucket and bucket[instanceName]) or t.New(className, instanceName, Object, functionName)
+		return (bucket and bucket[instanceName]) or t.New(className, instanceName, object, functionName)
 	end
 })
 
 if isServer then
 	script:Clone().Parent = ReplicatedFirst
-	
 	local onClientIs = function (player, parentName, childName, ...)
 		Watch(parentName):FireOnce(childName, ...)
 	end
