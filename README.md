@@ -64,28 +64,28 @@
       + local player = Watch(**'Player'**)
       + local data = Watch(**'DataStore'**)
       + local ray = Watch(**'FreezeRay'**)
-      + ---------TABLE EXAMPLE-----------
-      + local p1Health = Watch('Player1_Health', {name='Player1', health=100})
+      + ----------------------TABLE EXAMPLE----------------------
+      + local p1Health = Watch(**'Player1_Health'**, {name='Player1', health=100})
       
   - Always *On* a **Verb** [Note: On is short for Upon]
       + local onRun = player:On(**'Run'**)
       + local onData = data:On(**'Update'**)
       + local onHit = ray:On(**'Hit'**)
-      + ---------TABLE EXAMPLE-----------
-      + local onHealthChange = p1Health:On('health')
+      + -----------TABLES TEND TO BREAK THE VERB RULE-----------
+      + local onHealthChange = p1Health:On(**'health'**)
       
   - Always *Do* a **Function**
       + local playSoundId = onRun:Do(**function() runSound.Play() end**)
       + local updateTxtId = onData:Do(**function(txt) script.Parent.Text=txt end**)
       + local hitHandlerId = onHit:Do(**function(effect) session.status=effect end**)
-      + ---------TABLE EXAMPLE-----------
+      + ----------------------TABLE EXAMPLE----------------------
       + local p1HealthId = onHealthChange:Do(function (v, k) print(k..' is '..v) end)
       
   - Always *Fire*, *FireOnce*, or *FireAcross* a **Verb**
       + player:Fire(**'Run'**)
       + data:FireAcross(**'Update'**, 'Data!')
       + ray:FireOnce(**'Hit'**, 'frozen')
-      + ---------TABLE EXAMPLE-----------
+      + ------TABLE EVENTS FIRE WHEN PROPERTY VALUES CHANGE------
       + p1Health.health = '90'
       
 ## Four Ways to Fire Events
