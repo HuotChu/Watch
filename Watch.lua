@@ -80,6 +80,10 @@ local Verb = function (instanceName, baseObject, functionName)
 	return Class('Verb').New(instanceName, baseObject, functionName)
 end
 
+local Unpack = function (...)
+	
+end
+
 local Noun = function (instanceName, baseObject, functionName)
 	if not instanceName then
 		print('Noun Error', instanceName, baseObject, functionName)
@@ -90,20 +94,28 @@ local Noun = function (instanceName, baseObject, functionName)
 			VerbName = this.__super.Name..'_'..VerbName
 			return Verbs[VerbName] or Verb(VerbName)
 		end,
-		FireAcross = function (this, VerbName, ...)
+		FireAcross = function (this, ...)
 			if isClient then
-				ClientIs:FireServer(this.__super.Name, VerbName, ...)
+				ClientIs:FireServer(this.__super.Name, ...)
 			else
-				ServerIs:FireAllClients(this.__super.Name, VerbName, ...)
+				ServerIs:FireAllClients(this.__super.Name, ...)
 			end
 			return this
 		end,
 		FireOnce = function (this, VerbName, ...)
+			local args = {...}
+			local temp
+			if type(VerbName) == 'userdata' then
+				temp = VerbName
+				VerbName = args[1]
+				args[1] = temp
+			end
 			local name = this.__super.Name..'_'..VerbName
 			local verb = Verbs[name] or Verb(VerbName)
 			for path, t in pairs(Functions) do
 				if path:find(name) then
-					t.fn(...)
+					-- if passed from Client, 1st argument will be the player
+					t.fn(unpack(args))
 				end
 			end
 			return this
@@ -181,7 +193,7 @@ Watch = setmetatable(Watch, {
 if isServer then
 	script:Clone().Parent = ReplicatedFirst
 	local onClientIs = function (player, parentName, childName, ...)
-		Watch(parentName):FireOnce(childName, ...)
+		Watch(parentName):FireOnce(player, childName, ...)
 	end
 	ClientIs.OnServerEvent:Connect(onClientIs)
 else
